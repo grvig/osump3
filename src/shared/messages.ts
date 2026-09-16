@@ -15,3 +15,16 @@ export type OffscreenReply =
   | { target: "background"; type: "stage"; jobId: string; stage: Stage }
   | { target: "background"; type: "processed"; jobId: string; blobUrl: string; filename: string }
   | { target: "background"; type: "process-failed"; jobId: string; error: string };
+
+export type PopupRequest = { target: "background"; type: "download"; setId: number };
+
+// Job progress lives in session storage rather than in messages, so a popup
+// that was closed mid-download shows the right state when reopened.
+export interface JobStatus {
+  stage: Stage;
+  detail: string;
+}
+
+export function statusKey(setId: number): string {
+  return `status:${setId}`;
+}

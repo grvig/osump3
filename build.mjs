@@ -6,6 +6,7 @@ const outdir = "dist";
 // Each entry becomes one standalone script in dist. Everything is bundled
 // locally because MV3 refuses to run remotely hosted code.
 const entryPoints = {
+  background: "src/background/worker.ts",
   offscreen: "src/offscreen/offscreen.ts",
 };
 
