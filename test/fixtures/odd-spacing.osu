@@ -1,0 +1,18 @@
+osu file format v7
+
+// a comment line before any section
+[General]
+AudioFilename:Audio.MP3
+UnknownKey : whatever
+
+[Metadata]
+Title   :   Spaced Out
+Artist:  Loose Artist
+Creator :Mapper: With Colon
+Tags:
+
+[Weird Section]
+this line has no colon at all
+
+[Events]
+Background, 0, unquoted.jpg

@@ -1,0 +1,17 @@
+osu file format v14
+
+[General]
+AudioFilename: track.mp3
+
+[Metadata]
+Title:Video Map
+Artist:Someone
+Creator:Mapper
+BeatmapSetID:-1
+
+[Events]
+//Background and Video events
+Video,0,"intro.mp4"
+1,500,"other.avi"
+Sprite,Foreground,Centre,"sb/star.png",320,240
+ F,0,0,1000,1

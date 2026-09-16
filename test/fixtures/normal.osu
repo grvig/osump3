@@ -1,0 +1,36 @@
+osu file format v14
+
+[General]
+AudioFilename: audio.mp3
+AudioLeadIn: 0
+PreviewTime: 64230
+Mode: 0
+
+[Editor]
+DistanceSpacing: 1.2
+
+[Metadata]
+Title:Sayonara no Yukue
+TitleUnicode:さよならのゆくえ
+Artist:Aimer
+ArtistUnicode:エメ
+Creator:SomeMapper
+Version:Insane
+Source:Some Anime
+Tags:ballad piano
+BeatmapID:789012
+BeatmapSetID:123456
+
+[Difficulty]
+HPDrainRate:5
+
+[Events]
+//Background and Video events
+0,0,"bg.jpg",0,0
+//Break Periods
+
+[TimingPoints]
+120,500,4,2,0,60,1,0
+
+[HitObjects]
+256,192,1000,1,0,0:0:0:0:
