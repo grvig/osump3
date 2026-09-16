@@ -5,11 +5,14 @@ const outdir = "dist";
 
 // Each entry becomes one standalone script in dist. Everything is bundled
 // locally because MV3 refuses to run remotely hosted code.
-const entryPoints = {};
+const entryPoints = {
+  offscreen: "src/offscreen/offscreen.ts",
+};
 
 // HTML pages and the manifest are copied as-is.
 const staticFiles = {
   "manifest.json": "manifest.json",
+  "offscreen.html": "src/offscreen/offscreen.html",
 };
 
 rmSync(outdir, { recursive: true, force: true });
