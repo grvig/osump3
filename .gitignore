@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.zip
+*.log
+
+# Local editor and tooling configuration
+.vscode/
+.idea/
+.claude/
+CLAUDE.md
+.mcp.json

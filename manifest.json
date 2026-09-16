@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "osu! MP3 Downloader",
+  "version": "0.1.0",
+  "description": "Save the audio from an osu! beatmapset as a tagged mp3.",
+  "minimum_chrome_version": "116",
+  "permissions": ["downloads", "storage", "offscreen", "activeTab"],
+  "host_permissions": [
+    "https://osu.ppy.sh/*",
+    "https://catboy.best/*",
+    "https://api.nerinyan.moe/*",
+    "https://dl.nerinyan.moe/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Download MP3",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html"
+}

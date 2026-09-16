@@ -1,0 +1,23 @@
+{
+  "name": "osump3",
+  "version": "0.1.0",
+  "description": "Browser extension that saves the audio from an osu! beatmapset as a tagged mp3",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "browser-id3-writer": "^6.4.0",
+    "fflate": "^0.8.3"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.0",
+    "esbuild": "^0.28.2",
+    "typescript": "~5.9.0",
+    "vitest": "^5.0.1"
+  }
+}
