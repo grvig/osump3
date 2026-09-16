@@ -4,7 +4,13 @@ import { statusKey } from "../shared/messages";
 import { fetchFromChain } from "../sources/chain";
 import { catboy } from "../sources/mirrorA";
 import { nerinyan } from "../sources/mirrorB";
+import { politely, RateLimiter } from "../sources/politeness";
 import { handleOffscreenReply, processInOffscreen, revokeInOffscreen } from "./offscreenBridge";
+
+// One limiter for the whole extension, so requests stay serial across sources
+// and across downloads started back to back.
+const limiter = new RateLimiter();
+const sources = [catboy, nerinyan].map((source) => politely(source, limiter));
 
 const DEFAULT_TAG_OPTIONS: TagOptions = { scheme: "unicode", albumMode: "source", albumText: "", embedCover: true };
 
@@ -43,7 +49,7 @@ async function runDownload(setId: number): Promise<void> {
   let blobUrl: string | null = null;
   try {
     await setStatus(setId, "fetching");
-    const { data } = await fetchFromChain([catboy, nerinyan], setId, new AbortController().signal);
+    const { data } = await fetchFromChain(sources, setId, new AbortController().signal);
 
     const processed = await processInOffscreen(setId, data, DEFAULT_TAG_OPTIONS, (stage) => {
       setStatus(setId, stage);
