@@ -9,6 +9,7 @@ const entryPoints = {
   background: "src/background/worker.ts",
   offscreen: "src/offscreen/offscreen.ts",
   popup: "src/popup/popup.ts",
+  options: "src/options/options.ts",
 };
 
 // HTML pages and the manifest are copied as-is.
@@ -16,6 +17,7 @@ const staticFiles = {
   "manifest.json": "manifest.json",
   "offscreen.html": "src/offscreen/offscreen.html",
   "popup.html": "src/popup/popup.html",
+  "options.html": "src/options/options.html",
 };
 
 rmSync(outdir, { recursive: true, force: true });

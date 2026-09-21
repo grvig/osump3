@@ -34,6 +34,8 @@ function render(status: JobStatus | undefined): void {
 }
 
 async function main(): Promise<void> {
+  document.getElementById("options")!.addEventListener("click", () => chrome.runtime.openOptionsPage());
+
   // activeTab grants the URL of the current tab because opening the popup
   // counts as a user gesture, so the broad "tabs" permission is not needed.
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
