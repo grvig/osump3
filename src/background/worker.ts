@@ -45,8 +45,17 @@ function waitForDownload(downloadId: number): Promise<void> {
   });
 }
 
+// Guards against a double click or a second popup starting the same set twice.
+const activeSets = new Set<number>();
+
 async function runDownload(setId: number): Promise<void> {
+  if (activeSets.has(setId)) {
+    return;
+  }
+  activeSets.add(setId);
   let blobUrl: string | null = null;
+  // The click that wakes the worker must not have its own status swept up.
+  await staleSweep;
   try {
     await setStatus(setId, "fetching");
     const { data } = await fetchFromChain(sources, setId, new AbortController().signal);
@@ -67,12 +76,25 @@ async function runDownload(setId: number): Promise<void> {
     }
     await setStatus(setId, "failed", message);
   } finally {
+    activeSets.delete(setId);
     // Revoke on failure too, otherwise every failed save leaks the whole file.
     if (blobUrl !== null) {
       await revokeInOffscreen(blobUrl).catch(() => undefined);
     }
   }
 }
+
+// A job cannot outlive the service worker that ran it, so anything still in
+// progress at startup died with the previous worker. Without this the popup
+// would keep its button disabled for the rest of the browser session.
+const staleSweep = chrome.storage.session.get(null).then(async (items) => {
+  for (const [key, value] of Object.entries(items)) {
+    const status = value as JobStatus;
+    if (key.startsWith("status:") && status.stage !== "saved" && status.stage !== "failed") {
+      await chrome.storage.session.set({ [key]: { stage: "failed", detail: "Interrupted, please try again" } });
+    }
+  }
+});
 
 chrome.runtime.onMessage.addListener((message: PopupRequest | OffscreenReply) => {
   if (message?.target !== "background") {
