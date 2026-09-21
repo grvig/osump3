@@ -10,11 +10,13 @@
   #status { margin: 8px 0 0; min-height: 1.3em; word-break: break-word; }
   #status.error { color: #b00020; }
   .muted { color: #666; }
+  .warning { color: #8a5a00; }
 </style>
 <h1>osu! MP3 Downloader</h1>
 <p id="not-beatmap" class="muted" hidden>Navigate to a beatmap page on osu.ppy.sh first.</p>
 <div id="beatmap" hidden>
   <p class="muted">Beatmapset <span id="set-id"></span></p>
+  <p id="history" class="warning" hidden></p>
   <button id="download">Download MP3</button>
   <p id="status"></p>
 </div>

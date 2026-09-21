@@ -1,4 +1,5 @@
 import { parseBeatmapsetId } from "../core/setId";
+import { getHistoryEntry } from "../shared/history";
 import { statusKey, type JobStatus, type PopupRequest, type Stage } from "../shared/messages";
 
 const LABELS: Record<Stage, string> = {
@@ -44,6 +45,17 @@ async function main(): Promise<void> {
 
   document.getElementById("beatmap")!.hidden = false;
   document.getElementById("set-id")!.textContent = String(setId);
+
+  // Re-downloading is allowed, but the mirrors pay for every request, so make
+  // it obvious the file is already on disk.
+  const previous = await getHistoryEntry(setId);
+  if (previous !== undefined) {
+    const history = document.getElementById("history")!;
+    const date = new Date(previous.savedAt).toLocaleDateString();
+    history.textContent = `Already saved as "${previous.filename}" on ${date}.`;
+    history.hidden = false;
+    button.textContent = "Download again";
+  }
 
   const key = statusKey(setId);
   const stored = await chrome.storage.session.get(key);

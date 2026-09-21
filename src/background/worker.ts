@@ -1,5 +1,6 @@
 import type { TagOptions } from "../core/tagging";
 import type { JobStatus, OffscreenReply, PopupRequest, Stage } from "../shared/messages";
+import { recordDownload } from "../shared/history";
 import { statusKey } from "../shared/messages";
 import { fetchFromChain } from "../sources/chain";
 import { catboy } from "../sources/mirrorA";
@@ -68,6 +69,7 @@ async function runDownload(setId: number): Promise<void> {
     await setStatus(setId, "saving", processed.filename);
     const downloadId = await chrome.downloads.download({ url: blobUrl, filename: processed.filename });
     await waitForDownload(downloadId);
+    await recordDownload(setId, processed.filename);
     await setStatus(setId, "saved", processed.filename);
   } catch (error) {
     let message = String(error);
