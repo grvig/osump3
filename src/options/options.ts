@@ -17,6 +17,7 @@ const scheme = byId<HTMLSelectElement>("scheme");
 const albumMode = byId<HTMLSelectElement>("albumMode");
 const albumText = byId<HTMLInputElement>("albumText");
 const embedCover = byId<HTMLInputElement>("embedCover");
+const officialEnabled = byId<HTMLInputElement>("officialEnabled");
 let settings: Settings;
 
 async function persist(): Promise<void> {
@@ -24,6 +25,7 @@ async function persist(): Promise<void> {
   settings.albumMode = albumMode.value as AlbumMode;
   settings.albumText = albumText.value;
   settings.embedCover = embedCover.checked;
+  settings.officialEnabled = officialEnabled.checked;
   await saveSettings(settings);
   byId("albumTextRow").hidden = settings.albumMode !== "fixed";
   byId("saved").textContent = "Saved";
@@ -72,10 +74,11 @@ async function main(): Promise<void> {
   albumMode.value = settings.albumMode;
   albumText.value = settings.albumText;
   embedCover.checked = settings.embedCover;
+  officialEnabled.checked = settings.officialEnabled;
   byId("albumTextRow").hidden = settings.albumMode !== "fixed";
   renderMirrors();
 
-  for (const input of [scheme, albumMode, albumText, embedCover]) {
+  for (const input of [scheme, albumMode, albumText, embedCover, officialEnabled]) {
     input.addEventListener("change", () => persist());
   }
   byId("clearHistory").addEventListener("click", async () => {

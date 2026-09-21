@@ -6,6 +6,7 @@ import { loadSettings } from "../shared/settingsStore";
 import { fetchFromChain } from "../sources/chain";
 import { catboy } from "../sources/mirrorA";
 import { nerinyan } from "../sources/mirrorB";
+import { official } from "../sources/official";
 import { politely, RateLimiter } from "../sources/politeness";
 import type { Source } from "../sources/types";
 import { handleOffscreenReply, processInOffscreen, revokeInOffscreen } from "./offscreenBridge";
@@ -17,6 +18,7 @@ const MIRRORS: Record<MirrorId, Source> = {
   catboy: politely(catboy, limiter),
   nerinyan: politely(nerinyan, limiter),
 };
+const OFFICIAL = politely(official, limiter);
 
 async function setStatus(setId: number, stage: Stage, detail = ""): Promise<void> {
   const status: JobStatus = { stage, detail };
@@ -65,6 +67,9 @@ async function runDownload(setId: number): Promise<void> {
     // Read per job so a change on the options page applies to the next click.
     const settings = await loadSettings();
     const sources = settings.mirrors.filter((mirror) => mirror.enabled).map((mirror) => MIRRORS[mirror.id]);
+    if (settings.officialEnabled) {
+      sources.push(OFFICIAL);
+    }
     const { data } = await fetchFromChain(sources, setId, new AbortController().signal);
 
     const processed = await processInOffscreen(setId, data, tagOptionsFrom(settings), (stage) => {

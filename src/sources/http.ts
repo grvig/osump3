@@ -1,5 +1,8 @@
 import { SourceError } from "./types";
 
+// The response arrived but was not a zip, typically an HTML error or login page.
+export class NotArchiveError extends SourceError {}
+
 // A set with a long video or a heavy storyboard can run past 100 MB. Anything
 // beyond this is not worth holding in memory just to pull out one audio file.
 export const MAX_ARCHIVE_BYTES = 150 * 1024 * 1024;
@@ -69,7 +72,7 @@ export async function fetchArchive(url: string, signal: AbortSignal, init: Reque
 
   // Mirrors sometimes answer a missing set with a 200 and an HTML page.
   if (total < 4 || bytes[0] !== 0x50 || bytes[1] !== 0x4b || bytes[2] !== 0x03 || bytes[3] !== 0x04) {
-    throw new SourceError(`${new URL(url).host} did not return an osz archive`);
+    throw new NotArchiveError(`${new URL(url).host} did not return an osz archive`);
   }
   return bytes.buffer;
 }

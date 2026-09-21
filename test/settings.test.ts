@@ -16,6 +16,12 @@ describe("normaliseSettings", () => {
     expect(settings.embedCover).toBe(false);
   });
 
+  it("only enables the official source on an explicit true", () => {
+    expect(normaliseSettings({}).officialEnabled).toBe(false);
+    expect(normaliseSettings({ officialEnabled: "true" }).officialEnabled).toBe(false);
+    expect(normaliseSettings({ officialEnabled: true }).officialEnabled).toBe(true);
+  });
+
   it("keeps the stored mirror order and enabled flags", () => {
     const settings = normaliseSettings({ mirrors: [{ id: "nerinyan", enabled: true }, { id: "catboy", enabled: false }] });
     expect(settings.mirrors).toEqual([{ id: "nerinyan", enabled: true }, { id: "catboy", enabled: false }]);

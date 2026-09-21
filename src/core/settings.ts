@@ -15,6 +15,7 @@ export interface Settings {
   albumMode: AlbumMode;
   albumText: string;
   embedCover: boolean;
+  officialEnabled: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -23,6 +24,7 @@ export const DEFAULT_SETTINGS: Settings = {
   albumMode: "source",
   albumText: "osu!",
   embedCover: true,
+  officialEnabled: false,
 };
 
 function pick<T>(value: unknown, allowed: readonly T[], fallback: T): T {
@@ -61,6 +63,8 @@ export function normaliseSettings(raw: unknown): Settings {
   if (typeof stored.embedCover === "boolean") {
     embedCover = stored.embedCover;
   }
+  // Only an explicit true turns this on; anything else keeps the safe default.
+  const officialEnabled = stored.officialEnabled === true;
 
   return {
     mirrors,
@@ -68,6 +72,7 @@ export function normaliseSettings(raw: unknown): Settings {
     albumMode: pick(stored.albumMode, ["source", "fixed", "blank"], DEFAULT_SETTINGS.albumMode),
     albumText,
     embedCover,
+    officialEnabled,
   };
 }
 

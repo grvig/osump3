@@ -11,6 +11,7 @@
   .mirror { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
   .mirror span { flex: 1; }
   .hint { color: #666; font-size: 12px; margin: 4px 0; }
+  .hint.warning { color: #8a5a00; }
   [hidden] { display: none !important; }
   #saved { color: #2e7d32; min-height: 1.2em; }
 </style>
@@ -20,6 +21,8 @@
   <legend>Mirrors</legend>
   <p class="hint">Tried top to bottom. The next one is only used if the one above fails.</p>
   <div id="mirrors"></div>
+  <label><input id="officialEnabled" type="checkbox"> Fall back to osu.ppy.sh when every mirror fails</label>
+  <p class="hint warning">Needs you to be logged in to osu.ppy.sh. The official site rate limits downloads hard, and heavy use can get your account temporarily restricted. Leave this off unless you need it.</p>
 </fieldset>
 
 <fieldset>

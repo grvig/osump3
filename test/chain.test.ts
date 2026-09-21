@@ -3,6 +3,7 @@ import { fetchFromChain } from "../src/sources/chain";
 import { MAX_ARCHIVE_BYTES, parseRetryAfter } from "../src/sources/http";
 import { catboy } from "../src/sources/mirrorA";
 import { nerinyan } from "../src/sources/mirrorB";
+import { official } from "../src/sources/official";
 
 const ZIP_BYTES = new Uint8Array([0x50, 0x4b, 0x03, 0x04, 1, 2, 3]);
 
@@ -63,6 +64,12 @@ describe("fetchFromChain", () => {
 
     await expect(fetchFromChain([catboy, nerinyan], 1, controller.signal)).rejects.toThrow(/Aborted/);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("explains a logged-out response from the official source", async () => {
+    const fetchMock = mockFetch(() => new Response("<html>beatmap page</html>", { status: 200 }));
+    await expect(fetchFromChain([official], 5, new AbortController().signal)).rejects.toThrow(/not logged in/);
+    expect(fetchMock.mock.calls[0][1]).toMatchObject({ credentials: "include" });
   });
 
   it("fails clearly with no sources", async () => {
