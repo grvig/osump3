@@ -1,19 +1,22 @@
-import type { TagOptions } from "../core/tagging";
+import { tagOptionsFrom, type MirrorId } from "../core/settings";
 import type { JobStatus, OffscreenReply, PopupRequest, Stage } from "../shared/messages";
 import { recordDownload } from "../shared/history";
 import { statusKey } from "../shared/messages";
+import { loadSettings } from "../shared/settingsStore";
 import { fetchFromChain } from "../sources/chain";
 import { catboy } from "../sources/mirrorA";
 import { nerinyan } from "../sources/mirrorB";
 import { politely, RateLimiter } from "../sources/politeness";
+import type { Source } from "../sources/types";
 import { handleOffscreenReply, processInOffscreen, revokeInOffscreen } from "./offscreenBridge";
 
 // One limiter for the whole extension, so requests stay serial across sources
 // and across downloads started back to back.
 const limiter = new RateLimiter();
-const sources = [catboy, nerinyan].map((source) => politely(source, limiter));
-
-const DEFAULT_TAG_OPTIONS: TagOptions = { scheme: "unicode", albumMode: "source", albumText: "", embedCover: true };
+const MIRRORS: Record<MirrorId, Source> = {
+  catboy: politely(catboy, limiter),
+  nerinyan: politely(nerinyan, limiter),
+};
 
 async function setStatus(setId: number, stage: Stage, detail = ""): Promise<void> {
   const status: JobStatus = { stage, detail };
@@ -59,9 +62,12 @@ async function runDownload(setId: number): Promise<void> {
   await staleSweep;
   try {
     await setStatus(setId, "fetching");
+    // Read per job so a change on the options page applies to the next click.
+    const settings = await loadSettings();
+    const sources = settings.mirrors.filter((mirror) => mirror.enabled).map((mirror) => MIRRORS[mirror.id]);
     const { data } = await fetchFromChain(sources, setId, new AbortController().signal);
 
-    const processed = await processInOffscreen(setId, data, DEFAULT_TAG_OPTIONS, (stage) => {
+    const processed = await processInOffscreen(setId, data, tagOptionsFrom(settings), (stage) => {
       setStatus(setId, stage);
     });
     blobUrl = processed.blobUrl;
